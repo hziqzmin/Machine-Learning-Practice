@@ -15,22 +15,22 @@ Weekly machine learning labs and exercises implemented in Python and Google Cola
 
 ## 📝 Weekly Learning Notes
 
-### Week 02: Gradient Descent
-* **Core Concept:** First-order iterative optimization algorithm used to find a local minimum of a differentiable loss function by updating parameters in the opposite direction of the gradient.
-* **Key Takeaway:** The learning rate ($\alpha$) determines convergence stability; too high causes divergence/overshooting, while too low results in slow training. Feature scaling (e.g., standardization) significantly speeds up convergence.
-* **Key Tools & Techniques:** NumPy vectorization, Mean Squared Error (MSE), Batch vs. Mini-batch gradient updates.
+### Week 02: Concept of Machine Learning (Regression & Gradient Descent)
+* **Core Concept:** Finding an optimal hypothesis $H(x) = Wx + b$ (or $W^T X$ via matrix representation) that minimizes the Mean Squared Error (MSE) cost function: $\text{cost}(W, b) = \frac{1}{m}\sum_{i=1}^{m}(H(x^{(i)}) - y^{(i)})^2$.
+* **Key Takeaway:** Parameter optimization is achieved using Gradient Descent ($W := W - \alpha \frac{\partial}{\partial W}\text{cost}(W)$). While linear regression with MSE forms a smooth convex function, applying MSE directly to logistic hypothesis ($g(z) = \frac{1}{1 + e^{-z}}$) produces local minima traps. Hence, classification requires the cross-entropy/log-loss cost function to guarantee convergence.
+* **Key Topics:** Hypothesis representation, MSE cost function, Gradient Descent derivation, Convexity, Transition from Regression to Logistic Classification.
 
-### Week 03: Decision Trees
-* **Core Concept:** Non-parametric supervised learning algorithm that partitions feature space into homogenous regions via greedy, recursive binary splitting.
-* **Key Takeaway:** Tree splitting criteria (Gini Impurity vs. Information Gain/Entropy) measure node purity. Unconstrained trees overfit rapidly on training noise, requiring regularization through hyperparameter constraints (`max_depth`, `min_samples_split`, `min_samples_leaf`).
-* **Key Tools & Techniques:** `scikit-learn` (`DecisionTreeClassifier`), tree visualization, feature importance evaluation.
+### Week 03: Decision Tree
+* **Core Concept:** A non-parametric supervised model that constructs decision rules recursively by prioritizing features with the highest Information Gain ($Gain(S, A)$).
+* **Key Takeaway:** Information Gain represents the expected reduction in total entropy (disorder/uncertainty) after knowing a feature: $Gain(S, A) = Entropy(S) - \sum_{v}\frac{|S_v|}{|S|}Entropy(S_v)$, where binary entropy is $-p_{\oplus}\log_2 p_{\oplus} - p_{\ominus}\log_2 p_{\ominus}$. Continuous features must be discretized into threshold boundaries, and deep trees can easily become complex, requiring feature selection and rule pruning.
+* **Key Topics:** Entropy & Information Gain, Play Tennis example, Converting tree paths to IF-THEN rules, Continuous/complex feature handling, Advantages & Disadvantages (C4.5 / CART).
 
 ### Week 04: Support Vector Machine (SVM)
-* **Core Concept:** Supervised classification method that finds an optimal hyperplane maximizing the functional margin between data classes.
-* **Key Takeaway:** The decision boundary depends only on the critical subset of points (support vectors), making SVM memory-efficient. Non-linear boundaries are resolved using the **Kernel Trick** (e.g., RBF kernel) without explicitly projecting points into higher dimensions.
-* **Key Tools & Techniques:** `SVC`, linear vs. RBF kernels, tuning the regularization parameter $C$ and kernel coefficient $\gamma$.
+* **Core Concept:** A margin-based classifier that identifies the optimal maximum-margin hyperplane ($wx + b = 0$) maximizing the separation distance $M = \frac{2}{\|w\|}$, which is equivalent to minimizing $\frac{1}{2}\|w\|^2$.
+* **Key Takeaway:** By transforming the primal objective into a dual optimization problem via Lagrange multipliers and Karush-Kuhn-Tucker (KKT) conditions, the classification function depends purely on vector dot products. Applying the **Kernel Trick** ($K(u, v) = \varphi(u) \cdot \varphi(v)$, e.g., Polynomial, RBF) maps non-linearly separable data (such as XOR) into higher-dimensional space where linear separation becomes feasible without explicit high-dimensional coordinates.
+* **Key Topics:** Support Vectors & Maximum Margin, Primal vs. Dual problem, KKT conditions, Kernel Functions & Kernel Trick (Polynomial, RBF, Sigmoid), Solving non-linear XOR problems.
 
-### Week 05: Hidden Markov Model (HMM)
-* **Core Concept:** Probabilistic graphical model for sequential time-series data where the system transitions between hidden states that probabilistically generate visible observations.
-* **Key Takeaway:** Governed by three primary components: initial state probabilities ($\pi$), state transition probabilities ($A$), and emission probabilities ($B$). Solves three core problems: Evaluation (Forward algorithm), Decoding (Viterbi algorithm), and Learning (Baum-Welch expectation-maximization).
-* **Key Tools & Techniques:** Transition/emission matrices, sequence prediction, temporal pattern modeling.
+### Week 05: Statistical Models (HMM & Viterbi Algorithm)
+* **Core Concept:** A probabilistic graphical model for sequence labeling where hidden states ($y$) generate observable features ($x$), decomposed via the 1st-order Markov assumption (transition probability $P(y_i|y_{i-1})$) and observation independence assumption (emission probability $P(x_i|y_i)$).
+* **Key Takeaway:** Full joint sequence probability is given by $\arg\max \prod P(y_i|y_{i-1})P(x_i|y_i)$. Rather than evaluating all exponentially combinatorial sequences, the **Viterbi Algorithm** uses dynamic programming to efficiently determine the globally optimal hidden state path in linear time.
+* **Key Topics:** Markov Chains vs. Hidden Markov Models (HMM), Transition & Emission probability matrices, Sequence labeling (Part-of-Speech tagging), Viterbi path decoding algorithm.
