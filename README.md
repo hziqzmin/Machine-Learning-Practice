@@ -13,24 +13,36 @@ Weekly machine learning labs and exercises implemented in Python and Google Cola
 
 ---
 
+---
+
 ## 📝 Weekly Learning Notes
 
 ### Week 02: Concept of Machine Learning (Regression & Gradient Descent)
-* **Core Concept:** Finding an optimal hypothesis $H(x) = Wx + b$ (or $W^T X$ via matrix representation) that minimizes the Mean Squared Error (MSE) cost function: $\text{cost}(W, b) = \frac{1}{m}\sum_{i=1}^{m}(H(x^{(i)}) - y^{(i)})^2$.
-* **Key Takeaway:** Parameter optimization is achieved using Gradient Descent ($W := W - \alpha \frac{\partial}{\partial W}\text{cost}(W)$). While linear regression with MSE forms a smooth convex function, applying MSE directly to logistic hypothesis ($g(z) = \frac{1}{1 + e^{-z}}$) produces local minima traps. Hence, classification requires the cross-entropy/log-loss cost function to guarantee convergence.
-* **Key Topics:** Hypothesis representation, MSE cost function, Gradient Descent derivation, Convexity, Transition from Regression to Logistic Classification.
+* **Core Concept:** Formulating linear hypotheses ($H(x) = Wx + b$, matrix form $W^T X$) to minimize Mean Squared Error (MSE) cost: $\text{cost}(W) = \frac{1}{m}\sum (Wx^{(i)} - y^{(i)})^2$[cite: 7, 8, 10]. Derived parameter updates via Gradient Descent: $W := W - \alpha \frac{1}{m}\sum (Wx^{(i)} - y^{(i)})x^{(i)}$[cite: 14, 70].
+* **Theoretical Insight:** MSE produces a smooth convex surface for linear regression, ensuring convergence to a global minimum[cite: 15]. For classification, passing predictions through the sigmoid function $g(z) = \frac{1}{1 + e^{-z}}$ into MSE introduces non-convex local minima traps, requiring cross-entropy / log-loss instead[cite: 17, 18, 20].
+* **Hands-on Lab & Assignment:**
+  * Implemented iterative gradient descent from scratch in PyTorch (`torch.tensor`) without high-level optimizers[cite: 71, 72].
+  * Tracked cost minimization across 50 epochs and extended the pipeline from 1D scalar inputs to multi-dimensional feature matrices ($X \in \mathbb{R}^{m \times 2}$)[cite: 72, 73].
 
 ### Week 03: Decision Tree
-* **Core Concept:** A non-parametric supervised model that constructs decision rules recursively by prioritizing features with the highest Information Gain ($Gain(S, A)$).
-* **Key Takeaway:** Information Gain represents the expected reduction in total entropy (disorder/uncertainty) after knowing a feature: $Gain(S, A) = Entropy(S) - \sum_{v}\frac{|S_v|}{|S|}Entropy(S_v)$, where binary entropy is $-p_{\oplus}\log_2 p_{\oplus} - p_{\ominus}\log_2 p_{\ominus}$. Continuous features must be discretized into threshold boundaries, and deep trees can easily become complex, requiring feature selection and rule pruning.
-* **Key Topics:** Entropy & Information Gain, Play Tennis example, Converting tree paths to IF-THEN rules, Continuous/complex feature handling, Advantages & Disadvantages (C4.5 / CART).
+* **Core Concept:** Supervised classification model that partitions data by maximizing Information Gain: $Gain(S, A) = Entropy(S) - \sum \frac{\vert{}S_v\vert{}}{\vert{}S\vert{}}Entropy(S_v)$, reducing dataset impurity (Shannon entropy: $-p_{\oplus}\log_2 p_{\oplus} - p_{\ominus}\log_2 p_{\ominus}$)[cite: 26, 29, 30].
+* **Theoretical Insight:** Trees greedily select features that yield the purest subsets, which can be extracted directly as human-interpretable `IF-THEN` rule sets[cite: 31, 34, 36]. Continuous features require threshold discretization, and unconstrained trees overfit rapidly, necessitating depth constraints[cite: 35, 36, 81].
+* **Hands-on Lab & Assignment:**
+  * Preprocessed categorical data using `pandas` and `scikit-learn`'s `LabelEncoder` on the *PlayTennis* dataset, trained `DecisionTreeClassifier(criterion='entropy')`, and visualized tree splits using `graphviz`[cite: 77, 78, 79].
+  * Modeled an *Obesity Level Estimation* dataset (UCI repository): excluded leakage features (`Height`, `Weight`), binarized a 7-class target into binary classification, and tuned `max_depth` to prevent overfitting[cite: 80, 81].
 
 ### Week 04: Support Vector Machine (SVM)
-* **Core Concept:** A margin-based classifier that identifies the optimal maximum-margin hyperplane ($wx + b = 0$) maximizing the separation distance $M = \frac{2}{\|w\|}$, which is equivalent to minimizing $\frac{1}{2}\|w\|^2$.
-* **Key Takeaway:** By transforming the primal objective into a dual optimization problem via Lagrange multipliers and Karush-Kuhn-Tucker (KKT) conditions, the classification function depends purely on vector dot products. Applying the **Kernel Trick** ($K(u, v) = \varphi(u) \cdot \varphi(v)$, e.g., Polynomial, RBF) maps non-linearly separable data (such as XOR) into higher-dimensional space where linear separation becomes feasible without explicit high-dimensional coordinates.
-* **Key Topics:** Support Vectors & Maximum Margin, Primal vs. Dual problem, KKT conditions, Kernel Functions & Kernel Trick (Polynomial, RBF, Sigmoid), Solving non-linear XOR problems.
+* **Core Concept:** Margin-based classification identifying the optimal hyperplane ($wx + b = 0$) maximizing the margin $M = \frac{2}{\Vert{}w\Vert{}}$, formulated as the convex quadratic optimization problem: minimize $\frac{1}{2}\Vert{}w\Vert{}^2$[cite: 40, 44, 45, 47].
+* **Theoretical Insight:** Solving the dual formulation using Lagrange multipliers and KKT conditions reduces optimization entirely to inner products ($x_i^T x_j$)[cite: 47, 48, 49]. This enables the **Kernel Trick** ($K(u, v) = \varphi(u) \cdot \varphi(v)$, e.g., Linear, Polynomial, RBF) to linearly separate non-linear problems (such as XOR) in high-dimensional Hilbert space without explicitly computing high-dimensional coordinates[cite: 40, 51, 52].
+* **Hands-on Lab & Assignment:**
+  * Built an SMS Spam filter on the *SMSSpamCollection* dataset[cite: 84].
+  * Preprocessed text using Keras `Tokenizer`, transformed raw sentences into fixed-length padded integer sequences (`max_length=60`), and evaluated linear `SVC` with soft-margin parameter $C$[cite: 86, 87].
+  * Identified misclassifications and explored performance enhancements (e.g., hyperparameter tuning, RBF kernels, text vectorization approaches)[cite: 87, 88, 89].
 
 ### Week 05: Statistical Models (HMM & Viterbi Algorithm)
-* **Core Concept:** A probabilistic graphical model for sequence labeling where hidden states ($y$) generate observable features ($x$), decomposed via the 1st-order Markov assumption (transition probability $P(y_i|y_{i-1})$) and observation independence assumption (emission probability $P(x_i|y_i)$).
-* **Key Takeaway:** Full joint sequence probability is given by $\arg\max \prod P(y_i|y_{i-1})P(x_i|y_i)$. Rather than evaluating all exponentially combinatorial sequences, the **Viterbi Algorithm** uses dynamic programming to efficiently determine the globally optimal hidden state path in linear time.
-* **Key Topics:** Markov Chains vs. Hidden Markov Models (HMM), Transition & Emission probability matrices, Sequence labeling (Part-of-Speech tagging), Viterbi path decoding algorithm.
+* **Core Concept:** Probabilistic generative model for sequential data decomposing joint probability $P(X, Y)$ via the 1st-order Markov assumption (transition matrix $A$: $P(y_i\vert{}y_{i-1})$) and conditional observation independence (emission matrix $B$: $P(x_i\vert{}y_i)$)[cite: 60, 64].
+* **Theoretical Insight:** Directly scoring all potential label combinations is computationally prohibitive ($O(\vert{}S\vert{}^T)$). The **Viterbi Algorithm** resolves this decoding problem in polynomial time using dynamic programming to trace the maximum-likelihood hidden state trajectory[cite: 66].
+* **Hands-on Lab & Assignment:**
+  * Implemented hidden Markov models with `hmmlearn` (`hmm.MultinomialHMM`)[cite: 93, 94].
+  * Defined initial state vectors ($\pi$), state transition matrices, and emission probability matrices to solve weather state inference from clothing observations (`Boots`, `Shoes` $\rightarrow$ `Rainy`, `Sunny`)[cite: 92, 93, 94].
+  * Decoded optimal activity sequences (`walk, walk, clean, shop`) and evaluated log-likelihood scores using `model.decode()`[cite: 94, 95].
